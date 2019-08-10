@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Wox.Plugin.Todoist.UserControl1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Wox.Plugin.Todoist"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid x:Name="grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Frame Content="&#xD;&#xA;" Height="440" VerticalAlignment="Top" HorizontalAlignment="Left" Width="800" Background="White" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="apiKeyTextBox" HorizontalAlignment="Left" Height="22" Margin="103,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="365" Grid.Column="1"/>
+        <Label Content="Todoist Plugin Settings&#xD;&#xA;" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.687,0.465" Width="220" FontFamily="Segoe UI Black" FontSize="18" Height="58" Grid.Column="1"/>
+        <Rectangle Fill="#FFF4F4F5" Height="0" Margin="1,51,3,0" Stroke="Black" VerticalAlignment="Top" Grid.Column="1"/>
+        <Separator HorizontalAlignment="Left" Height="2" Margin="6,49,0,0" VerticalAlignment="Top" Width="765" Grid.Column="1"/>
+        <Button x:Name="saveButton" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="393,139,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Height="19"/>
+        <Label Grid.ColumnSpan="2" Content="API KEY" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Black"/>
+
+    </Grid>
+</UserControl>
