@@ -7,18 +7,24 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="17*"/>
+            <RowDefinition Height="433*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Frame Content="&#xD;&#xA;" Height="440" VerticalAlignment="Top" HorizontalAlignment="Left" Width="800" Background="White" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="apiKeyTextBox" HorizontalAlignment="Left" Height="22" Margin="103,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="365" Grid.Column="1"/>
-        <Label Content="Todoist Plugin Settings&#xD;&#xA;" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.687,0.465" Width="220" FontFamily="Segoe UI Black" FontSize="18" Height="58" Grid.Column="1"/>
-        <Rectangle Fill="#FFF4F4F5" Height="0" Margin="1,51,3,0" Stroke="Black" VerticalAlignment="Top" Grid.Column="1"/>
-        <Separator HorizontalAlignment="Left" Height="2" Margin="6,49,0,0" VerticalAlignment="Top" Width="765" Grid.Column="1"/>
-        <Button x:Name="saveButton" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="393,139,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Height="19"/>
-        <Label Grid.ColumnSpan="2" Content="API KEY" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Black"/>
+        <Frame Content="&#xD;&#xA;" Height="440" VerticalAlignment="Top" HorizontalAlignment="Left" Width="800" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <TextBox x:Name="apiKeyTextBox" HorizontalAlignment="Left" Height="22" Margin="103,56.4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="365" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="Todoist Plugin Settings&#xD;&#xA;" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.687,0.465" Width="220" FontFamily="Segoe UI Black" FontSize="18" Height="58" Grid.Column="1" Grid.RowSpan="2"/>
+        <Rectangle Fill="#FFF4F4F5" Height="0" Margin="1,34.4,3,0" Stroke="Black" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Separator HorizontalAlignment="Left" Height="2" Margin="6,32.4,0,0" VerticalAlignment="Top" Width="765" Grid.Column="1" Grid.Row="1"/>
+        <Button x:Name="saveButton" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="393,119.2,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Height="19" Grid.Row="1" RenderTransformOrigin="0.299,-5.032"/>
+        <Label Grid.ColumnSpan="2" Content="API KEY" HorizontalAlignment="Left" Margin="10,56.4,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Black" Grid.Row="1"/>
+        <Label x:Name="lblFailedTasks" Grid.ColumnSpan="2" Content="Failed to sync 1 task. " HorizontalAlignment="Left" Margin="10,181.2,0,0" VerticalAlignment="Top" Grid.Row="1" Foreground="#FFC70606"/>
+        <Button x:Name="btnResendRequests" Grid.ColumnSpan="2" Content="Resend" HorizontalAlignment="Left" Margin="175,184.2,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1" Grid.Row="1"/>
 
     </Grid>
 </UserControl>

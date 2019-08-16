@@ -34,7 +34,7 @@ namespace Wox.Plugin.Todoist
         }
         public Control CreateSettingPanel()
         {
-           return new SettingsControl(storage);
+           return new SettingsControl(storage,this);
         }
 
       
@@ -44,7 +44,7 @@ namespace Wox.Plugin.Todoist
         public List<Result> Query(Query query)
         {
             String task = query.Search;
-            String api_key = storage.Load().api_key;
+            String api_key = storage.Load().api_key; //TODO abstract storage
 
             if (api_key.Trim().Length != 0)
             {
@@ -119,9 +119,29 @@ namespace Wox.Plugin.Todoist
                 { return true; }
             };
         }
+        public void ResendFailedTasks()
+        {
+            List<string> tasks = storage.Load().failedRequests;
+            string api_key = storage.Load().api_key;
+
+            foreach (string task in tasks)
+            {
+                var request = client.CreateQuickTask(api_key, task);
+
+                request.ContinueWith((taskRequest) =>
+                {
+                    bool worked = taskRequest.Result;
+                    if (worked) 
+                    {
+                        storage.Load().failedRequests.Remove(task);
+                        storage.Save();
+                    }
+                });
+
+
+            }
+        }
 
     }
-
-      
-   
+ 
 }
