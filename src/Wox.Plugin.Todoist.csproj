@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WoxSettingsStorage.cs" />
     <Compile Include="TodoistAPI.cs" />
     <Compile Include="TodoistPlugin.cs" />
     <Compile Include="Settings.cs" />

@@ -1,52 +1,44 @@
 ﻿
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using Wox.Infrastructure.Storage;
 
 namespace Wox.Plugin.Todoist
 {
     
     public partial class SettingsControl : UserControl
     {
-        private PluginJsonStorage<Settings> storage;
+        private WoxSettingsStorage storage;
         private TodoistPlugin plugin;
 
-        public SettingsControl(PluginJsonStorage<Settings> storage, TodoistPlugin plugin)
+        public SettingsControl(WoxSettingsStorage storage, TodoistPlugin plugin)
         {
+            plugin.controlDispatcher = Application.Current.Dispatcher;
             this.storage = storage;
             this.plugin = plugin;
           
             InitializeComponent();
-            Settings settings = storage.Load();
-            apiKeyTextBox.Text = settings.api_key;
+            apiKeyTextBox.Text = storage.Api_key;
 
-            ConfigureFailedTasks();
-           
+            ConfigureFailedTasks(); 
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-           
-            Settings settings = storage.Load();
-            settings.api_key = apiKeyTextBox.Text;
-            storage.Save();
-            
+            storage.Api_key = apiKeyTextBox.Text;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             plugin.ResendFailedTasks();
-
-            ConfigureFailedTasks();
         }
 
-        private void ConfigureFailedTasks()
+        public void ConfigureFailedTasks()
         {
-            Settings settings = storage.Load();
-            int failedTasks = settings.failedRequests.Count;
+            
+            int failedTasks = storage.FailedRequests.Count;
             lblFailedTasks.Content = $"Failed to sync {failedTasks} tasks.";
-
+        
             if (failedTasks == 0)
             {
                 lblFailedTasks.Visibility = Visibility.Hidden;
@@ -57,6 +49,12 @@ namespace Wox.Plugin.Todoist
                 lblFailedTasks.Visibility = Visibility.Visible;
                 btnResendRequests.Visibility = Visibility.Visible;
             }
+            
+
+           
+
+           
+
         }
     }
 }

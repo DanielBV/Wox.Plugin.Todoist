@@ -6,6 +6,7 @@ namespace Wox.Plugin.Todoist
     public class Settings
     {
 
+   
         public List<String> failedRequests { get; set; }
         public Settings()
         {

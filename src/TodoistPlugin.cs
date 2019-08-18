@@ -1,40 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
-using System.Net.Http;
+using System.Threading;
 using System.Windows.Controls;
-using Wox.Infrastructure.Storage;
+using System.Windows.Threading;
 
 namespace Wox.Plugin.Todoist
 {
     public class TodoistPlugin : IPlugin, ISettingProvider
     {
 
-
-
-
         private static readonly TodoistAPI client = new TodoistAPI();
-        private PluginJsonStorage<Settings> storage = new PluginJsonStorage<Settings>();
-        private static readonly int FAILED_TASK_RESULT_SCORE = -1;
-        private static readonly int VALID_RESULT_SCORE = 10;
+        private static readonly WoxSettingsStorage configuration = new WoxSettingsStorage();
+
+        private SettingsControl settingsControl;
+        public Dispatcher controlDispatcher;
+
+        private static readonly int FAILED_TASK_RESULT_SCORE = 1;
+        private static readonly int VALID_RESULT_SCORE = 1000000;
+
+       
 
         public TodoistPlugin()
         {
-            storage = new PluginJsonStorage<Settings>();
-            var model = storage.Load();
-            if (model.api_key is null)
-            { //TODO this shouldn't be necessary
-                model.api_key = "";
-                storage.Save();
-            }
-
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-           
-
         }
+
         public Control CreateSettingPanel()
         {
-           return new SettingsControl(storage,this);
+           settingsControl = new SettingsControl(configuration, this);
+            return settingsControl;
         }
 
       
@@ -44,15 +40,16 @@ namespace Wox.Plugin.Todoist
         public List<Result> Query(Query query)
         {
             String task = query.Search;
-            String api_key = storage.Load().api_key; //TODO abstract storage
+            String api_key = configuration.Api_key; //TODO abstract storage
 
             if (api_key.Trim().Length != 0)
             {
                 List<Result> results = new List<Result>
                 {
                     GetResultValid(api_key,task)
-                };
-                if (storage.Load().failedRequests.Count != 0)
+                     
+            };
+                if (configuration.FailedRequests.Count != 0)
                     results.Add(getResultTasksFailed());
 
                 return results;
@@ -79,14 +76,16 @@ namespace Wox.Plugin.Todoist
 
                     request.ContinueWith((taskRequest) =>
                     {
+                       
                         bool worked = taskRequest.Result;
                         if (!worked)
                         {
-                            storage.Load().failedRequests.Add(task);
-                            storage.Save();
+                            configuration.AddFailedRequest(task);
+                            UpdateSettingsControl();
                         }
-                    });
 
+                    });
+                   
                     return true;
                 },
                
@@ -101,7 +100,6 @@ namespace Wox.Plugin.Todoist
 
                 Title = "You must set your todoist API token in the plugin settings before adding tasks",
                 IcoPath = "icon.png",
-                Score = FAILED_TASK_RESULT_SCORE,
                 Action = _ =>
                 { return true; },
                 
@@ -115,14 +113,15 @@ namespace Wox.Plugin.Todoist
 
                 Title = "The creation of some tasks failed, go to the plugin settings to resend them.",
                 IcoPath = "icon.png",
+                Score = FAILED_TASK_RESULT_SCORE,
                 Action = _ =>
                 { return true; }
             };
         }
         public void ResendFailedTasks()
         {
-            List<string> tasks = storage.Load().failedRequests;
-            string api_key = storage.Load().api_key;
+            List<string> tasks = configuration.FailedRequests;
+            string api_key = configuration.Api_key;
 
             foreach (string task in tasks)
             {
@@ -132,14 +131,32 @@ namespace Wox.Plugin.Todoist
                 {
                     bool worked = taskRequest.Result;
                     if (worked) 
-                    {
-                        storage.Load().failedRequests.Remove(task);
-                        storage.Save();
-                    }
+                        configuration.RemoveFailedRequest(task);
+
+                    
+
                 });
 
 
             }
+            UpdateSettingsControl();
+
+        }
+
+
+        public void UpdateSettingsControl()
+        {
+
+         
+             if (settingsControl!=null && controlDispatcher!= null)
+             {
+                
+                controlDispatcher.BeginInvoke(
+                new ThreadStart(() => { settingsControl.ConfigureFailedTasks(); }));
+
+            }
+             
+              
         }
 
     }
