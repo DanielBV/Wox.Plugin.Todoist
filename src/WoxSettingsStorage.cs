@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Net;
 using Wox.Infrastructure.Storage;
 
 
@@ -12,9 +13,8 @@ namespace Wox.Plugin.Todoist
 
         public WoxSettingsStorage()
         {
-           
             settings = new PluginJsonStorage<Settings>();
-            settings.Save();
+           
         }
 
 
@@ -36,7 +36,7 @@ namespace Wox.Plugin.Todoist
         {
             get
             {
-                return settings.Load().failedRequests;
+                return settings.Load().FailedRequests;
             }
         }
 
@@ -58,7 +58,23 @@ namespace Wox.Plugin.Todoist
             settings.Save();
         }
        
+        public void SetLastFailedHttpCode(HttpStatusCode code)
+        {
+            settings.Load().LastFailedStatusCode = code;
+            Save();
+        }
 
+        public void EmptyLastFailedHttpCode()
+        {
+            settings.Load().LastFailedStatusCode = HttpStatusCode.OK;
+            Save();
+        }
+
+      
+        public HttpStatusCode GetLastFailedHttpCode()
+        {
+            return settings.Load().LastFailedStatusCode;
+        }
       
     }
 }

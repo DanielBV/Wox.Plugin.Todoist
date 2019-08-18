@@ -17,7 +17,8 @@ namespace Wox.Plugin.Todoist
         {
 
         }
-        public Task<bool> CreateQuickTask(string api_key, string task)
+
+        public Task<HttpStatusCode> CreateQuickTask(string api_key, string task)
         {
             var values = new Dictionary<string, string>
                             {
@@ -31,7 +32,7 @@ namespace Wox.Plugin.Todoist
             return request.ContinueWith((taskRequest) =>
             {
                 HttpResponseMessage response = taskRequest.Result;
-                return response.StatusCode == HttpStatusCode.OK;
+                return response.StatusCode;
             });
 
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+
 using System.Net;
 using System.Threading;
 using System.Windows.Controls;
@@ -12,10 +12,10 @@ namespace Wox.Plugin.Todoist
     {
 
         private static readonly TodoistAPI client = new TodoistAPI();
-        private static readonly WoxSettingsStorage configuration = new WoxSettingsStorage();
+        private static WoxSettingsStorage configuration = new WoxSettingsStorage();
 
         private SettingsControl settingsControl;
-        public Dispatcher controlDispatcher;
+        public Dispatcher controlDispatcher { get; set; }
 
         private static readonly int FAILED_TASK_RESULT_SCORE = 1;
         private static readonly int VALID_RESULT_SCORE = 1000000;
@@ -40,7 +40,7 @@ namespace Wox.Plugin.Todoist
         public List<Result> Query(Query query)
         {
             String task = query.Search;
-            String api_key = configuration.Api_key; //TODO abstract storage
+            String api_key = configuration.Api_key; 
 
             if (api_key.Trim().Length != 0)
             {
@@ -76,10 +76,12 @@ namespace Wox.Plugin.Todoist
 
                     request.ContinueWith((taskRequest) =>
                     {
-                       
-                        bool worked = taskRequest.Result;
-                        if (!worked)
+
+                        HttpStatusCode responseStatus = taskRequest.Result;
+                        if (responseStatus!=HttpStatusCode.OK)
                         {
+                            configuration.SetLastFailedHttpCode(responseStatus);
+                            configuration.SetLastFailedHttpCode(responseStatus);
                             configuration.AddFailedRequest(task);
                             UpdateSettingsControl();
                         }
@@ -122,6 +124,7 @@ namespace Wox.Plugin.Todoist
         {
             List<string> tasks = configuration.FailedRequests;
             string api_key = configuration.Api_key;
+            configuration.EmptyLastFailedHttpCode();
 
             foreach (string task in tasks)
             {
@@ -129,9 +132,11 @@ namespace Wox.Plugin.Todoist
 
                 request.ContinueWith((taskRequest) =>
                 {
-                    bool worked = taskRequest.Result;
-                    if (worked) 
+                    HttpStatusCode responseStatus = taskRequest.Result;
+                    if (responseStatus == HttpStatusCode.OK)
                         configuration.RemoveFailedRequest(task);
+                    else
+                        configuration.SetLastFailedHttpCode(responseStatus);
 
                     
 

@@ -1,5 +1,6 @@
 ﻿
 using System.IO;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -43,17 +44,39 @@ namespace Wox.Plugin.Todoist
             {
                 lblFailedTasks.Visibility = Visibility.Hidden;
                 btnResendRequests.Visibility = Visibility.Hidden;
+                lblFailedStatusCode.Visibility = Visibility.Hidden;
             }
             else
             {
+                SetFailedStatusCodeMessage();
                 lblFailedTasks.Visibility = Visibility.Visible;
                 btnResendRequests.Visibility = Visibility.Visible;
+                lblFailedStatusCode.Visibility = Visibility.Visible;
             }
             
 
-           
+        }
 
-           
+    public void SetFailedStatusCodeMessage()
+        {
+            HttpStatusCode status = storage.GetLastFailedHttpCode();
+            string message;
+
+            switch (status)
+            {
+                case HttpStatusCode.OK:
+                    message = "The last failed request returned OK but somehow it still failed. Try again or contact the developer.";
+                    break;
+                case HttpStatusCode.Forbidden:
+                    message = "The last failed request returned HTTP 403 Forbidden.\nPlease verify that your API Token is correct and try again.";
+                    break;
+                default:
+                    message = $"The last failed request returned {status}.";
+                    break;
+
+            }
+
+            lblFailedStatusCode.Content = message;
 
         }
     }
