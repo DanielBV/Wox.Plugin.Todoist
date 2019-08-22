@@ -138,13 +138,13 @@ namespace Wox.Plugin.Todoist
                     else
                         configuration.SetLastFailedHttpCode(responseStatus);
 
-                    
+                    UpdateSettingsControl();
 
                 });
 
 
             }
-            UpdateSettingsControl();
+          
 
         }
 

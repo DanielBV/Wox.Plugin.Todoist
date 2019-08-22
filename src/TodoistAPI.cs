@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -26,14 +27,29 @@ namespace Wox.Plugin.Todoist
                                { "text", task }
                             };
             var content = new FormUrlEncodedContent(values);
+
+
+           
             var request = client.PostAsync("https://api.todoist.com/sync/v8/quick/add", content);
-
-
             return request.ContinueWith((taskRequest) =>
             {
-                HttpResponseMessage response = taskRequest.Result;
-                return response.StatusCode;
+
+                try
+                {
+                    HttpResponseMessage response = taskRequest.Result;
+                    return response.StatusCode;
+                }
+                catch (Exception)
+                {
+                    return HttpStatusCode.ServiceUnavailable;
+                }
+
             });
+        
+          
+           
+
+
 
         }
     }

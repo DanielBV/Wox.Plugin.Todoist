@@ -70,6 +70,9 @@ namespace Wox.Plugin.Todoist
                 case HttpStatusCode.Forbidden:
                     message = "The last failed request returned HTTP 403 Forbidden.\nPlease verify that your API Token is correct and try again.";
                     break;
+                case HttpStatusCode.ServiceUnavailable:
+                    message = "Can't access 'api.todoist.com'. Please ensure you are connected to the internet and try again. "
+                    break;
                 default:
                     message = $"The last failed request returned {status}.";
                     break;
