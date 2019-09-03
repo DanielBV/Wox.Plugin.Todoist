@@ -12,7 +12,7 @@ namespace Wox.Plugin.Todoist
     {
 
         private static readonly TodoistAPI client = new TodoistAPI();
-        private static WoxSettingsStorage configuration = new WoxSettingsStorage();
+        private static WoxSettingsStorage configuration;
 
         private SettingsControl settingsControl;
         public Dispatcher controlDispatcher { get; set; }
@@ -35,7 +35,10 @@ namespace Wox.Plugin.Todoist
 
       
         public void Init(PluginInitContext context)
-        {}
+        {
+            var path = context.CurrentPluginMetadata.PluginDirectory;
+            configuration = new WoxSettingsStorage(path);
+        }
 
         public List<Result> Query(Query query)
         {

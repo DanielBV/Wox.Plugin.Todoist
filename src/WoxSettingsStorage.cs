@@ -1,34 +1,57 @@
 ﻿
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
-using Wox.Infrastructure.Storage;
-
 
 namespace Wox.Plugin.Todoist
 {
     public class WoxSettingsStorage
     {
 
-        private PluginJsonStorage<Settings> settings;
+        private Settings settings;
+        private string plugin_directory;
+        private static readonly string SETTINGS_FILE_NAME = "todoist-settings.json";
 
-        public WoxSettingsStorage()
+        public WoxSettingsStorage(string plugin_directory)
         {
-            settings = new PluginJsonStorage<Settings>();
-           
+            this.plugin_directory = plugin_directory;
+            settings = LoadSettingsFile(plugin_directory);
         }
 
+
+        private Settings LoadSettingsFile(string plugin_directory)
+        {
+            var full_path = Path.Combine(plugin_directory, SETTINGS_FILE_NAME);
+
+            if (File.Exists(full_path))
+            {
+                try {
+                    string json = File.ReadAllText(full_path);
+                    return JsonConvert.DeserializeObject<Settings>(json);
+                }
+                catch (Exception)
+                {
+                    return new Settings();
+                }
+                
+            }
+
+            return new Settings();
+        }
 
         public string Api_key
         {
             get
             {
-                return settings.Load().api_key;
+                return settings.api_key;
             }
 
             set
             {
-                settings.Load().api_key = value;
-                settings.Save();
+                settings.api_key = value;
+                Save();
             }
         }
 
@@ -36,7 +59,7 @@ namespace Wox.Plugin.Todoist
         {
             get
             {
-                return settings.Load().FailedRequests;
+                return settings.FailedRequests;
             }
         }
 
@@ -55,25 +78,29 @@ namespace Wox.Plugin.Todoist
 
         public void Save()
         {
-            settings.Save();
+            var full_path = Path.Combine(plugin_directory, SETTINGS_FILE_NAME);
+
+            string json = JsonConvert.SerializeObject(settings);
+            File.WriteAllText(full_path, json);
+
         }
        
         public void SetLastFailedHttpCode(HttpStatusCode code)
         {
-            settings.Load().LastFailedStatusCode = code;
+            settings.LastFailedStatusCode = code;
             Save();
         }
 
         public void EmptyLastFailedHttpCode()
         {
-            settings.Load().LastFailedStatusCode = HttpStatusCode.OK;
+            settings.LastFailedStatusCode = HttpStatusCode.OK;
             Save();
         }
 
       
         public HttpStatusCode GetLastFailedHttpCode()
         {
-            return settings.Load().LastFailedStatusCode;
+            return settings.LastFailedStatusCode;
         }
       
     }
