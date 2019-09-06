@@ -116,11 +116,13 @@ namespace Wox.Plugin.Todoist
             return new Result
             {
 
-                Title = "The creation of some tasks failed, go to the plugin settings to resend them.",
+                Title = $"Failed to create {configuration.FailedRequests.Count} tasks. Click here to try again. You can check the settings for more info.",
                 IcoPath = "icon.png",
                 Score = FAILED_TASK_RESULT_SCORE,
                 Action = _ =>
-                { return true; }
+                { ResendFailedTasks();
+                  return true;
+                }
             };
         }
         public void ResendFailedTasks()

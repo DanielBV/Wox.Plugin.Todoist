@@ -15,7 +15,11 @@ Unofficial Wox plugin to use [Todoist's Quick Add](https://get.todoist.help/hc/e
 
 You can use all the features of [Todoist's Quick Add](https://get.todoist.help/hc/en-us/articles/115001745265-Task-Quick-Add) (natural language, labels, priority...)
 
+## Failed to create task
+If a result like this one appears, it means the plugin failed to create a previous task. 
 
-If creating the task fails, you can resend it in the settings:
+![The image doesn't work :(](images/failedrequest1.png)
 
-![The image doesn't work :(](images/failedrequest.png)
+You can try again by clicking the result. Due to the way Wox is implemented, the list of results won't update unless you type something in the launcher. If after typing somethign the result remains, you can go to the plugin's settings to see why it's failing.
+
+![The image doesn't work :(](images/failedrequest2.png)
