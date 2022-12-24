@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Wox.Plugin.Todoist
@@ -11,7 +12,6 @@ namespace Wox.Plugin.Todoist
     class TodoistAPI
     {
         private static readonly HttpClient client = new HttpClient();
-      
 
 
         public TodoistAPI()
@@ -23,14 +23,11 @@ namespace Wox.Plugin.Todoist
         {
             var values = new Dictionary<string, string>
                             {
-                               { "token", api_key},
                                { "text", task }
                             };
             var content = new FormUrlEncodedContent(values);
-
-
-           
-            var request = client.PostAsync("https://api.todoist.com/sync/v8/quick/add", content);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", api_key);
+            var request = client.PostAsync("https://api.todoist.com/sync/v9/quick/add", content);
             return request.ContinueWith((taskRequest) =>
             {
 
